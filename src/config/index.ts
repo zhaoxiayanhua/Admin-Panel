@@ -29,7 +29,7 @@ export const envConfigs: ConfigMap = {
     process.env.NEXT_PUBLIC_APP_PREVIEW_IMAGE ?? '/preview.png',
   theme: process.env.NEXT_PUBLIC_THEME ?? 'default',
   appearance: process.env.NEXT_PUBLIC_APPEARANCE ?? 'system',
-  locale: process.env.NEXT_PUBLIC_DEFAULT_LOCALE ?? 'en',
+  locale: process.env.NEXT_PUBLIC_DEFAULT_LOCALE ?? 'zh',
   database_url: process.env.DATABASE_URL ?? '',
   database_provider: process.env.DATABASE_PROVIDER ?? 'postgresql',
   // PostgreSQL schema name (e.g. 'web'). Default: 'public'

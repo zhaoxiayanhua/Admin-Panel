@@ -12,112 +12,40 @@
   },
   "main_navs": [
     {
-      "title": "System",
+      "title": "SHEIN Management",
       "items": [
         {
-          "title": "Users & Permissions",
-          "icon": "User",
-          "is_expand": true,
-          "children": [
-            {
-              "title": "Users",
-              "url": "/admin/users",
-              "icon": "User"
-            },
-            {
-              "title": "Roles",
-              "url": "/admin/roles",
-              "icon": "Users"
-            },
-            {
-              "title": "Permissions",
-              "url": "/admin/permissions",
-              "icon": "ShieldCheck"
-            }
-          ]
+          "title": "Store Authorization",
+          "url": "/admin/shein-auth",
+          "icon": "Key"
         },
         {
-          "title": "Pages & Content",
-          "icon": "FileText",
-          "children": [
-            {
-              "title": "Categories",
-              "icon": "Folder",
-              "url": "/admin/categories"
-            },
-            {
-              "title": "Posts",
-              "icon": "FileText",
-              "url": "/admin/posts"
-            }
-          ]
+          "title": "Pending Pickup",
+          "url": "/admin/shein-pending-pickup",
+          "icon": "Package"
         },
         {
-          "title": "Payments & Credits",
-          "icon": "DollarSign",
-          "children": [
-            {
-              "title": "Payments",
-              "url": "/admin/payments",
-              "icon": "DollarSign"
-            },
-            {
-              "title": "Subscriptions",
-              "url": "/admin/subscriptions",
-              "icon": "CreditCard"
-            },
-            {
-              "title": "Credits",
-              "url": "/admin/credits",
-              "icon": "Coins"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "Business",
-      "items": [
-        {
-          "title": "AI Tasks",
-          "url": "/admin/ai-tasks",
-          "icon": "Brain"
+          "title": "Shipped Orders",
+          "url": "/admin/shein-shipped",
+          "icon": "Truck"
         },
         {
-          "title": "AI Chats",
-          "url": "/admin/chats",
-          "icon": "MessageCircle"
+          "title": "Returns & Refunds",
+          "url": "/admin/shein-returns",
+          "icon": "PackageX"
         }
       ]
     }
   ],
   "bottom_nav": {
-    "items": [
-      {
-        "title": "Settings",
-        "url": "/admin/settings/general",
-        "icon": "Settings"
-      },
-      {
-        "title": "API Keys",
-        "url": "/admin/apikeys",
-        "icon": "Key"
-      }
-    ]
+    "items": []
   },
   "user": {
     "nav": {
-      "items": [
-        {
-          "title": "Profile",
-          "url": "/settings/profile",
-          "icon": "User",
-          "target": "_blank"
-        }
-      ]
+      "items": []
     },
     "show_email": false,
-    "show_signout": true,
+    "show_signout": false,
     "signout_callback": "/"
   },
   "footer": {

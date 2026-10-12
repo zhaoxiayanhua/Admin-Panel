@@ -81,6 +81,7 @@ export async function canAccessAdmin(userId: string): Promise<boolean> {
 
 /**
  * Check if current user has permission, throw error if not
+ * NOTE: Authentication disabled - all permissions granted
  */
 export async function requirePermission({
   code,
@@ -91,27 +92,13 @@ export async function requirePermission({
   redirectUrl?: string;
   locale?: string;
 }): Promise<void> {
-  const user = await getSignUser();
-
-  if (!user) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError('User not authenticated');
-  }
-
-  const allowed = await hasPermission(user.id, code);
-
-  if (!allowed) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError(`Permission required: ${code}`);
-  }
+  // Authentication disabled - allow all access
+  return;
 }
 
 /**
  * Check if current user has any of the permissions, throw error if not
+ * NOTE: Authentication disabled - all permissions granted
  */
 export async function requireAnyPermission({
   codes,
@@ -122,29 +109,13 @@ export async function requireAnyPermission({
   redirectUrl?: string;
   locale?: string;
 }): Promise<void> {
-  const user = await getSignUser();
-
-  if (!user) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError('User not authenticated');
-  }
-
-  const allowed = await hasAnyPermission(user.id, codes);
-
-  if (!allowed) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError(
-      `Any of these permissions required: ${codes.join(', ')}`
-    );
-  }
+  // Authentication disabled - allow all access
+  return;
 }
 
 /**
  * Check if current user has all of the permissions, throw error if not
+ * NOTE: Authentication disabled - all permissions granted
  */
 export async function requireAllPermissions({
   codes,
@@ -155,29 +126,13 @@ export async function requireAllPermissions({
   redirectUrl?: string;
   locale?: string;
 }): Promise<void> {
-  const user = await getSignUser();
-
-  if (!user) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError('User not authenticated');
-  }
-
-  const allowed = await hasAllPermissions(user.id, codes);
-
-  if (!allowed) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError(
-      `All of these permissions required: ${codes.join(', ')}`
-    );
-  }
+  // Authentication disabled - allow all access
+  return;
 }
 
 /**
  * Check if current user has role, throw error if not
+ * NOTE: Authentication disabled - all roles granted
  */
 export async function requireRole({
   roleName,
@@ -188,27 +143,13 @@ export async function requireRole({
   redirectUrl?: string;
   locale?: string;
 }): Promise<void> {
-  const user = await getSignUser();
-
-  if (!user) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError('User not authenticated');
-  }
-
-  const allowed = await hasRole(user.id, roleName);
-
-  if (!allowed) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError(`Role required: ${roleName}`);
-  }
+  // Authentication disabled - allow all access
+  return;
 }
 
 /**
  * Check if current user has any of the roles, throw error if not
+ * NOTE: Authentication disabled - all roles granted
  */
 export async function requireAnyRole({
   roleNames,
@@ -219,29 +160,13 @@ export async function requireAnyRole({
   redirectUrl?: string;
   locale?: string;
 }): Promise<void> {
-  const user = await getSignUser();
-
-  if (!user) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError('User not authenticated');
-  }
-
-  const allowed = await hasAnyRole(user.id, roleNames);
-
-  if (!allowed) {
-    if (redirectUrl) {
-      redirect({ href: redirectUrl, locale: locale || '' });
-    }
-    throw new PermissionDeniedError(
-      `Any of these roles required: ${roleNames.join(', ')}`
-    );
-  }
+  // Authentication disabled - allow all access
+  return;
 }
 
 /**
  * Check if current user can access admin area
+ * NOTE: Authentication disabled - all users can access admin
  */
 export async function requireAdminAccess({
   redirectUrl,
@@ -250,17 +175,8 @@ export async function requireAdminAccess({
   redirectUrl?: string;
   locale?: string;
 }): Promise<void> {
-  const user = await getSignUser();
-
-  if (!user) {
-    redirect({ href: '/sign-in', locale: locale || '' });
-  }
-
-  const allowed = await canAccessAdmin(user!.id);
-
-  if (!allowed) {
-    redirect({ href: redirectUrl || '', locale: locale || '' });
-  }
+  // Authentication disabled - allow all access
+  return;
 }
 
 /**

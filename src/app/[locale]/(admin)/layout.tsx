@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { requireAdminAccess } from '@/core/rbac/permission';
 import { LocaleDetector } from '@/shared/blocks/common';
 import { DashboardLayout } from '@/shared/blocks/dashboard/layout';
 import { getAllConfigs } from '@/shared/models/config';
@@ -19,12 +18,6 @@ export default async function AdminLayout({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-
-  // Check if user has admin access permission
-  await requireAdminAccess({
-    redirectUrl: `/no-permission`,
-    locale: locale || '',
-  });
 
   const t = await getTranslations('admin');
 
@@ -44,6 +37,9 @@ export default async function AdminLayout({
   if (configs.version) {
     sidebar.header!.version = configs.version;
   }
+
+  // Remove user authentication component from sidebar
+  sidebar.user = undefined;
 
   return (
     <DashboardLayout sidebar={sidebar}>

@@ -7,5 +7,6 @@ export default async function AdminPage({
 }) {
   const { locale } = await params;
 
-  redirect({ href: '/admin/users', locale });
+  // Redirect to SHEIN pending pickup page
+  redirect({ href: '/admin/shein-pending-pickup', locale });
 }

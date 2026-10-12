@@ -19,32 +19,32 @@ export async function proxy(request: NextRequest) {
     ? pathname.slice(locale.length + 1)
     : pathname;
 
-  // Only check authentication for admin routes
-  if (
-    pathWithoutLocale.startsWith('/admin') ||
-    pathWithoutLocale.startsWith('/settings') ||
-    pathWithoutLocale.startsWith('/activity')
-  ) {
-    // Check if session cookie exists
-    const sessionCookie = getSessionCookie(request);
-
-    // If no session token found, redirect to sign-in
-    if (!sessionCookie) {
-      const signInUrl = new URL(
-        isValidLocale ? `/${locale}/sign-in` : '/sign-in',
-        request.url
+  // SHEIN 授权检查 - 强制要求授权才能访问管理后台
+  if (pathWithoutLocale.startsWith('/admin')) {
+    // 授权相关页面不需要检查，允许访问
+    if (
+      !pathWithoutLocale.startsWith('/admin/shein-auth') &&
+      !pathWithoutLocale.startsWith('/admin/shein-auth-callback')
+    ) {
+      // 检查环境变量中的授权状态
+      const openKeyId = process.env.SHEIN_OPEN_KEY_ID;
+      const secretKey = process.env.SHEIN_SECRET_KEY;
+      const isAuthorized = !!(
+        openKeyId &&
+        secretKey &&
+        openKeyId.trim() !== '' &&
+        secretKey.trim() !== ''
       );
-      // Add the current path (including search params) as callback - use relative path for multi-language support
-      const callbackPath = pathWithoutLocale + request.nextUrl.search;
-      signInUrl.searchParams.set('callbackUrl', callbackPath);
-      return NextResponse.redirect(signInUrl);
-    }
 
-    // For admin routes, we need to check RBAC permissions
-    // Note: Full permission check happens in the page/API route level
-    // This is a lightweight session check to prevent unauthorized access
-    // The detailed permission check (admin.access and specific permissions)
-    // will be done in the layout or individual pages using requirePermission()
+      // 如果未授权，重定向到授权页面
+      if (!isAuthorized) {
+        const authUrl = new URL(
+          isValidLocale ? `/${locale}/admin/shein-auth` : '/admin/shein-auth',
+          request.url
+        );
+        return NextResponse.redirect(authUrl);
+      }
+    }
   }
 
   intlResponse.headers.set('x-pathname', request.nextUrl.pathname);
