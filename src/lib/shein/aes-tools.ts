@@ -30,8 +30,12 @@ export class AESTools {
       // 将 ivSeed 转换为 16 字节 IV
       const ivBuffer = Buffer.from(ivSeed.substring(0, IV_LENGTH), UTF_8);
 
-      // 创建解密器
-      const decipher = crypto.createDecipheriv(KEY_ALGORITHM, keyBuffer, ivBuffer);
+      // 创建解密器 - 使用 Uint8Array 来满足类型要求
+      const decipher = crypto.createDecipheriv(
+        KEY_ALGORITHM,
+        new Uint8Array(keyBuffer),
+        new Uint8Array(ivBuffer)
+      );
 
       // 解密
       const encryptedBuffer = Buffer.from(encryptedContent, 'base64');
@@ -65,7 +69,11 @@ export class AESTools {
       const keyBuffer = Buffer.from(appSecretKey.substring(0, IV_LENGTH), UTF_8);
       const ivBuffer = Buffer.from(ivSeed.substring(0, IV_LENGTH), UTF_8);
 
-      const cipher = crypto.createCipheriv(KEY_ALGORITHM, keyBuffer, ivBuffer);
+      const cipher = crypto.createCipheriv(
+        KEY_ALGORITHM,
+        new Uint8Array(keyBuffer),
+        new Uint8Array(ivBuffer)
+      );
 
       let encrypted = cipher.update(content, UTF_8);
       encrypted = Buffer.concat([encrypted, cipher.final()]);
