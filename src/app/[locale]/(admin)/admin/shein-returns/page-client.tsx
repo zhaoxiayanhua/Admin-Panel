@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { CalendarIcon, Search, Eye, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
+import { fetchWithSheinCredentials } from '@/lib/shein/fetch-with-credentials';
 
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -107,7 +108,7 @@ export function SheinReturnsPageClient() {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/shein/returns/list', {
+      const response = await fetchWithSheinCredentials('/api/shein/returns/list', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -139,7 +140,7 @@ export function SheinReturnsPageClient() {
   const fetchReturnDetail = async (returnOrderNo: string) => {
     setLoading(true);
     try {
-      const response = await fetch('/api/shein/returns/detail', {
+      const response = await fetchWithSheinCredentials('/api/shein/returns/detail', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

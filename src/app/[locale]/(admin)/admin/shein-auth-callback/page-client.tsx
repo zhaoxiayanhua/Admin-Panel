@@ -75,8 +75,8 @@ export function SheinAuthCallbackClient() {
         setAuthResult(data.info);
         setError(null);
 
-        // 自动保存凭证到 .env.local
-        await saveCredentials(data.info.openKeyId, data.info.secretKey);
+        // 保存凭证到浏览器本地存储
+        saveCredentialsToLocalStorage(data.info.openKeyId, data.info.secretKey);
       } else {
         console.error('获取密钥失败:', data);
         setError(`获取密钥失败: ${data.msg}`);
@@ -86,6 +86,35 @@ export function SheinAuthCallbackClient() {
       setError('获取授权密钥失败，请检查网络连接');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const saveCredentialsToLocalStorage = (openKeyId: string, secretKey: string) => {
+    try {
+      // 保存到 localStorage
+      localStorage.setItem('SHEIN_OPEN_KEY_ID', openKeyId);
+      localStorage.setItem('SHEIN_SECRET_KEY', secretKey);
+
+      console.log('✅ 凭证已保存到浏览器本地存储');
+      setSaveSuccess(true);
+
+      // 开始倒计时自动跳转
+      let countdown = 10;
+      setRedirectCountdown(countdown);
+
+      const timer = setInterval(() => {
+        countdown--;
+        setRedirectCountdown(countdown);
+
+        if (countdown <= 0) {
+          clearInterval(timer);
+          // 默认跳转到管理后台首页
+          window.location.href = '/admin';
+        }
+      }, 1000);
+    } catch (err) {
+      console.error('保存凭证到本地存储失败:', err);
+      setError('保存凭证失败，请手动记录密钥');
     }
   };
 
@@ -179,7 +208,7 @@ export function SheinAuthCallbackClient() {
               <div className="text-center">
                 <p className="text-2xl font-medium">授权配置成功！</p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  凭证已自动保存到本地配置文件
+                  凭证已保存到浏览器本地存储
                 </p>
               </div>
 
@@ -333,7 +362,7 @@ export function SheinAuthCallbackClient() {
               {authResult?.secretKey}
             </code>
             <p className="mt-2 text-xs text-amber-700">
-              ⚠️ 此密钥仅显示一次，请立即保存到 .env.local 文件中
+              ⚠️ 此密钥已保存到浏览器本地存储，请勿泄露
             </p>
           </div>
 
@@ -370,10 +399,10 @@ export function SheinAuthCallbackClient() {
           <div className="rounded-lg border border-green-200 bg-green-50 p-4">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="h-4 w-4 text-green-600" />
-              <h4 className="text-sm font-medium text-green-900">授权凭证已自动保存</h4>
+              <h4 className="text-sm font-medium text-green-900">授权凭证已保存</h4>
             </div>
             <p className="text-xs text-green-700">
-              凭证已自动保存到 <code className="bg-green-100 px-1 rounded">.env.local</code> 文件中，
+              凭证已保存到浏览器本地存储，后续 API 调用将自动使用这些凭证。
               页面将在 <span className="font-bold">{redirectCountdown}</span> 秒后自动跳转到管理后台。
             </p>
           </div>

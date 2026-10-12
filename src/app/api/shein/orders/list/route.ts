@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateSignature } from '@/lib/shein/api';
 
-// SHEIN API 配置（暂时使用环境变量，实际应从数据库或配置中心获取）
+// SHEIN API 配置
 const SHEIN_API_BASE_URL = process.env.SHEIN_API_BASE_URL || 'https://openapi.sheincorp.com';
-const SHEIN_OPEN_KEY_ID = process.env.SHEIN_OPEN_KEY_ID || '';
-const SHEIN_SECRET_KEY = process.env.SHEIN_SECRET_KEY || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,6 +15,10 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // 从请求头中获取凭证（前端从 localStorage 发送）
+    const SHEIN_OPEN_KEY_ID = request.headers.get('x-shein-open-key-id') || process.env.SHEIN_OPEN_KEY_ID || '';
+    const SHEIN_SECRET_KEY = request.headers.get('x-shein-secret-key') || process.env.SHEIN_SECRET_KEY || '';
 
     // 如果没有配置密钥，返回模拟数据
     if (!SHEIN_OPEN_KEY_ID || !SHEIN_SECRET_KEY) {
