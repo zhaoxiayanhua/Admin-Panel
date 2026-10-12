@@ -37,9 +37,9 @@ export class AESTools {
         new Uint8Array(ivBuffer)
       );
 
-      // 解密
+      // 解密 - 使用 Uint8Array 包装
       const encryptedBuffer = Buffer.from(encryptedContent, 'base64');
-      let decrypted = decipher.update(encryptedBuffer);
+      let decrypted = decipher.update(new Uint8Array(encryptedBuffer));
       decrypted = Buffer.concat([decrypted, decipher.final()]);
 
       return decrypted.toString(UTF_8);
@@ -75,7 +75,7 @@ export class AESTools {
         new Uint8Array(ivBuffer)
       );
 
-      let encrypted = cipher.update(content, UTF_8);
+      let encrypted = cipher.update(Buffer.from(content, UTF_8));
       encrypted = Buffer.concat([encrypted, cipher.final()]);
 
       return encrypted.toString('base64');
