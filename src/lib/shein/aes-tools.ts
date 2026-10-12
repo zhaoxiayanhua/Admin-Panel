@@ -37,12 +37,11 @@ export class AESTools {
         new Uint8Array(ivBuffer)
       );
 
-      // 解密 - 使用 Uint8Array 包装
-      const encryptedBuffer = Buffer.from(encryptedContent, 'base64');
-      let decrypted = decipher.update(new Uint8Array(encryptedBuffer));
-      decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-      return decrypted.toString(UTF_8);
+      // 直接使用字符串编码重载，避免 Buffer/Uint8Array 泛型冲突
+      return (
+        decipher.update(encryptedContent, 'base64', UTF_8) +
+        decipher.final(UTF_8)
+      );
     } catch (error) {
       console.error('AES 解密失败:', error);
       throw new Error('解密失败');
@@ -75,10 +74,9 @@ export class AESTools {
         new Uint8Array(ivBuffer)
       );
 
-      let encrypted = cipher.update(Buffer.from(content, UTF_8));
-      encrypted = Buffer.concat([encrypted, cipher.final()]);
-
-      return encrypted.toString('base64');
+      return (
+        cipher.update(content, UTF_8, 'base64') + cipher.final('base64')
+      );
     } catch (error) {
       console.error('AES 加密失败:', error);
       throw new Error('加密失败');

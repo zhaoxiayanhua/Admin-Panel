@@ -1,4 +1,7 @@
 import { and, count, desc, eq, sql } from 'drizzle-orm';
+import type { ExtractTablesWithRelations } from 'drizzle-orm';
+import type { PgTransaction } from 'drizzle-orm/pg-core';
+import type { PostgresJsQueryResultHKT } from 'drizzle-orm/postgres-js';
 
 import { db } from '@/core/db';
 import { aiTask, credit } from '@/config/db/schema';
@@ -7,6 +10,12 @@ import { appendUserToResult, User } from '@/shared/models/user';
 
 import { consumeCredits, CreditStatus } from './credit';
 
+type DbTransaction = PgTransaction<
+  PostgresJsQueryResultHKT,
+  Record<string, never>,
+  ExtractTablesWithRelations<Record<string, never>>
+>;
+
 export type AITask = typeof aiTask.$inferSelect & {
   user?: User;
 };
@@ -14,7 +23,7 @@ export type NewAITask = typeof aiTask.$inferInsert;
 export type UpdateAITask = Partial<Omit<NewAITask, 'id' | 'createdAt'>>;
 
 export async function createAITask(newAITask: NewAITask) {
-  const result = await db().transaction(async (tx) => {
+  const result = await db().transaction(async (tx: DbTransaction) => {
     // 1. create task record
     const [taskResult] = await tx.insert(aiTask).values(newAITask).returning();
 
@@ -55,7 +64,7 @@ export async function findAITaskById(id: string) {
 }
 
 export async function updateAITaskById(id: string, updateAITask: UpdateAITask) {
-  const result = await db().transaction(async (tx) => {
+  const result = await db().transaction(async (tx: DbTransaction) => {
     // task failed, Revoke credit consumption record
     if (updateAITask.status === AITaskStatus.FAILED && updateAITask.creditId) {
       // get consumed credit record

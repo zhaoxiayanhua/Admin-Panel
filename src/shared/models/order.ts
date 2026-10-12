@@ -1,4 +1,7 @@
 import { and, count, desc, eq } from 'drizzle-orm';
+import type { ExtractTablesWithRelations } from 'drizzle-orm';
+import type { PgTransaction } from 'drizzle-orm/pg-core';
+import type { PostgresJsQueryResultHKT } from 'drizzle-orm/postgres-js';
 
 import { db } from '@/core/db';
 import { credit, order, subscription } from '@/config/db/schema';
@@ -11,6 +14,12 @@ import {
   updateSubscriptionBySubscriptionNo,
 } from './subscription';
 import { appendUserToResult, User } from './user';
+
+type DbTransaction = PgTransaction<
+  PostgresJsQueryResultHKT,
+  Record<string, never>,
+  ExtractTablesWithRelations<Record<string, never>>
+>;
 
 export type Order = typeof order.$inferSelect & {
   user?: User;
@@ -190,7 +199,7 @@ export async function updateOrderInTransaction({
   }
 
   // need transaction
-  const result = await db().transaction(async (tx) => {
+  const result = await db().transaction(async (tx: DbTransaction) => {
     let result: any = {
       order: null,
       subscription: null,
@@ -288,7 +297,7 @@ export async function updateSubscriptionInTransaction({
   }
 
   // need transaction
-  const result = await db().transaction(async (tx) => {
+  const result = await db().transaction(async (tx: DbTransaction) => {
     let result: any = {
       order: null,
       subscription: null,

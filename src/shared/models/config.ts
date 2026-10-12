@@ -1,4 +1,7 @@
 import { revalidateTag, unstable_cache } from 'next/cache';
+import type { ExtractTablesWithRelations } from 'drizzle-orm';
+import type { PgTransaction } from 'drizzle-orm/pg-core';
+import type { PostgresJsQueryResultHKT } from 'drizzle-orm/postgres-js';
 
 import { db } from '@/core/db';
 import { envConfigs } from '@/config';
@@ -7,6 +10,12 @@ import {
   getAllSettingNames,
   publicSettingNames,
 } from '@/shared/services/settings';
+
+type DbTransaction = PgTransaction<
+  PostgresJsQueryResultHKT,
+  Record<string, never>,
+  ExtractTablesWithRelations<Record<string, never>>
+>;
 
 export type Config = typeof config.$inferSelect;
 export type NewConfig = typeof config.$inferInsert;
@@ -17,7 +26,7 @@ export type Configs = Record<string, string>;
 export const CACHE_TAG_CONFIGS = 'configs';
 
 export async function saveConfigs(configs: Record<string, string>) {
-  const result = await db().transaction(async (tx) => {
+  const result = await db().transaction(async (tx: DbTransaction) => {
     const configEntries = Object.entries(configs);
     const results: any[] = [];
 
